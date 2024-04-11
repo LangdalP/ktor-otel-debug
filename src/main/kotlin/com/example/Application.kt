@@ -21,58 +21,55 @@ import io.opentelemetry.sdk.trace.samplers.Sampler
 import io.opentelemetry.semconv.ResourceAttributes
 
 fun main() {
-    embeddedServer(Netty, port = 7331, host = "0.0.0.0", module = Application::module)
-        .start(wait = true)
-}
+    embeddedServer(Netty, port = 7331, host = "0.0.0.0") {
+        println("### Available processors: ${Runtime.getRuntime().availableProcessors()}")
 
-fun Application.module() {
-    println("### Available processors: ${Runtime.getRuntime().availableProcessors()}")
+        val serviceName = "otel-debug"
+        val endpoint = "http://localhost:4317/"
+        val sampler = Sampler.parentBased(Sampler.alwaysOn())
 
-    val serviceName = "otel-debug"
-    val endpoint = "http://localhost:4317/"
-    val sampler = Sampler.parentBased(Sampler.alwaysOn())
-
-    val resource: Resource = Resource.getDefault()
-        .merge(
-            Resource.create(
-                Attributes.of(
-                    ResourceAttributes.SERVICE_NAME,
-                    serviceName,
-                    ResourceAttributes.SERVICE_VERSION,
-                    "1.0"
+        val resource: Resource = Resource.getDefault()
+            .merge(
+                Resource.create(
+                    Attributes.of(
+                        ResourceAttributes.SERVICE_NAME,
+                        serviceName,
+                        ResourceAttributes.SERVICE_VERSION,
+                        "1.0"
+                    )
                 )
             )
-        )
 
 
-    val spanExporter = OtlpGrpcSpanExporter.builder()
-        .setEndpoint(endpoint)
-        .build()
+        val spanExporter = OtlpGrpcSpanExporter.builder()
+            .setEndpoint(endpoint)
+            .build()
 
-    val sdkTracerProvider = SdkTracerProvider.builder()
-        .addSpanProcessor(BatchSpanProcessor.builder(spanExporter).build())
-        .setResource(resource)
-        .setSampler(sampler)
-        .build()
+        val sdkTracerProvider = SdkTracerProvider.builder()
+            .addSpanProcessor(BatchSpanProcessor.builder(spanExporter).build())
+            .setResource(resource)
+            .setSampler(sampler)
+            .build()
 
-    val openTelemetry = OpenTelemetrySdk.builder().apply {
-        setTracerProvider(sdkTracerProvider)
-        setPropagators(
-            ContextPropagators.create(
-                TextMapPropagator.composite(
-                    W3CTraceContextPropagator.getInstance(),
-                    W3CBaggagePropagator.getInstance()
+        val openTelemetry = OpenTelemetrySdk.builder().apply {
+            setTracerProvider(sdkTracerProvider)
+            setPropagators(
+                ContextPropagators.create(
+                    TextMapPropagator.composite(
+                        W3CTraceContextPropagator.getInstance(),
+                        W3CBaggagePropagator.getInstance()
+                    )
                 )
             )
-        )
-    }.build()
+        }.build()
 
-    val httpClient = HttpClient(OkHttp)
+        val httpClient = HttpClient(OkHttp)
 
-    install(KtorServerTracing) {
-        setOpenTelemetry(openTelemetry)
-    }
+        install(KtorServerTracing) {
+            setOpenTelemetry(openTelemetry)
+        }
 
-    configureMonitoring()
-    configureRouting(httpClient)
+        configureMonitoring()
+        configureRouting(httpClient)
+    }.start(wait = true)
 }
