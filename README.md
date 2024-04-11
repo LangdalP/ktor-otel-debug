@@ -14,3 +14,7 @@ That function is [called from here.](https://github.com/open-telemetry/opentelem
 4. Run the requests in Queries.http
 5. Observe that you only get one trace, since we have limited the number of threads to one. If you change the limit [here](https://github.com/LangdalP/ktor-otel-debug/blob/main/build.gradle.kts#L24) to two and redo the steps above, you will instead see two traces. And so on.
 
+## Quick tour of code
+- [build.gradle.kts](https://github.com/LangdalP/ktor-otel-debug/blob/main/build.gradle.kts)
+- [Application setup here](https://github.com/LangdalP/ktor-otel-debug/blob/main/src/main/kotlin/com/example/Application.kt)
+- [The route which uses a HttpClient](https://github.com/LangdalP/ktor-otel-debug/blob/main/src/main/kotlin/com/example/plugins/Routing.kt)
