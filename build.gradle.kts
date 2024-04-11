@@ -18,10 +18,9 @@ application {
     mainClass.set("com.example.ApplicationKt")
 
     val isDevelopment: Boolean = project.ext.has("development")
+
     applicationDefaultJvmArgs = listOf(
-        "-Dio.ktor.development=$isDevelopment",
-        // The below setting makes the bug more visible, since the otel context seems to be reused per thread
-        "-XX:ActiveProcessorCount=1"
+        "-Dio.ktor.development=$isDevelopment"
     )
 }
 
