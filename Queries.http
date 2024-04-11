@@ -1,0 +1,20 @@
+
+### Query with traceparent
+GET http://localhost:7331/
+traceparent: 00-aaaaaa3577b34da6a3ce929d0e0e4736-33f067aa0ba902b7-01
+
+### Query with traceparent 2
+GET http://localhost:7331/
+traceparent: 00-bbbbbb3577b34da6a3ce929d0e0e4736-33f067aa0ba902b7-01
+
+### Query with traceparent 3
+GET http://localhost:7331/
+traceparent: 00-cccccc3577b34da6a3ce929d0e0e4736-33f067aa0ba902b7-01
+
+### Query with traceparent 4
+GET http://localhost:7331/
+traceparent: 00-dddddd3577b34da6a3ce929d0e0e4736-33f067aa0ba902b7-01
+
+### Query with traceparent 5
+GET http://localhost:7331/
+traceparent: 00-eeeeee3577b34da6a3ce929d0e0e4736-33f067aa0ba902b7-01
