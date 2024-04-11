@@ -9,7 +9,7 @@ That function is [called from here.](https://github.com/open-telemetry/opentelem
 ## How to reproduce?
 
 1. Clone this repo
-2. Run the application
+2. Run the application with `./gradlew run`
 3. Also, run some service that collects traces on localhost:4317, such as Jaeger UI or [otel-desktop-viewer](https://github.com/CtrlSpice/otel-desktop-viewer)
 4. Run the requests in Queries.http
 5. Observe that you only get one trace, since we have limited the number of threads to one. If you change the limit [here](https://github.com/LangdalP/ktor-otel-debug/blob/main/build.gradle.kts#L24) to two and redo the steps above, you will instead see two traces. And so on.
