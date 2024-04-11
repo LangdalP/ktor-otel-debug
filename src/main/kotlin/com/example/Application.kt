@@ -26,6 +26,8 @@ fun main() {
 }
 
 fun Application.module() {
+    println("### Available processors: ${Runtime.getRuntime().availableProcessors()}")
+
     val serviceName = "otel-debug"
     val endpoint = "http://localhost:4317/"
     val sampler = Sampler.parentBased(Sampler.alwaysOn())
